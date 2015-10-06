@@ -1,16 +1,18 @@
 
 VERSION ?= 1.0.0
 BINARY = ecsctl
-SOURCEDIR = .
-SOURCES := $(shell find $(SOURCEDIR) -name '*.go')
 LDFLAGS=-ldflags "-X main.Version=${VERSION}"
+ARQUITECTURES = darwin linux
+TARGETS = $(addprefix $(BINARY)_, $(ARQUITECTURES))
 
-.PHONY: $(BINARY) lint
+.PHONY: $(TARGETS) lint
 
-all: $(BINARY)
+all: $(TARGETS)
 
 lint:
 	gofmt -w $$(pwd)
 
-$(BINARY): lint
-	go build $(LDFLAGS) -o ${BINARY}
+$(TARGETS): lint
+		$(foreach TARGET, $(ARQUITECTURES), \
+			GOOS=$(TARGET) go build $(LDFLAGS) -o ${BINARY}_$(TARGET); \
+		)
