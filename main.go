@@ -8,6 +8,10 @@ import (
 	"github.com/codegangsta/cli"
 )
 
+var (
+	Version string
+)
+
 func ecsCli(c *cli.Context) {
 	service := c.Args().First()
 	nextService := c.Args().Get(1)
@@ -48,7 +52,8 @@ func ecsCli(c *cli.Context) {
 func main() {
 	app := cli.NewApp()
 	app.Name = "ecsctl"
-	app.Usage = "rolling-update <service> <next service> [--timeout 60] [--update-period 45] [--intance-count 3]"
+	app.Version = Version
+	app.Usage = "rolling-update <service> <next service> [--timeout 60] [--update-period 45] [--instance-count 3]"
 
 	app.Flags = []cli.Flag{
 		cli.StringFlag{

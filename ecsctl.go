@@ -194,12 +194,11 @@ func (interactor *ecsInteractor) rollingUpdate(config ecsUpdateConfig) {
 
 	newService, err := interactor.checkService(nextServiceName)
 	if err == notFound {
-		fmt.Println("creating a new service")
+		fmt.Printf("creating a new service %s\n", nextServiceName)
 		interactor.createService(nextServiceName, newTask)
 	} else if newService.status == "INACTIVE" {
-		fmt.Println("service inactive")
-		fmt.Println("creating service with timestamp")
 		nextServiceName = fmt.Sprintf("%s-%s", prevServiceName, time.Now().Format("20060102150405"))
+		fmt.Printf("creating service with timestamp %s\n", nextServiceName)
 		interactor.createService(nextServiceName, newTask)
 	}
 
