@@ -1,8 +1,8 @@
 package main
 
 import (
+	"fmt"
 	"os"
-  "fmt"
 	"time"
 
 	"github.com/codegangsta/cli"
@@ -20,16 +20,16 @@ func ecsCli(c *cli.Context) {
 
 	switch {
 	case len(service) == 0:
-    fmt.Println("invalid service name")
+		fmt.Println("invalid service name")
 		return
 	case len(nextService) == 0:
-    fmt.Println("invalid service name")
+		fmt.Println("invalid service name")
 		return
 	case len(region) == 0:
-    fmt.Println("invalid aws region")
+		fmt.Println("invalid aws region")
 		return
-  case service == nextService:
-    fmt.Println("invalid service name")
+	case service == nextService:
+		fmt.Println("invalid service name")
 		return
 	}
 

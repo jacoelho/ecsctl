@@ -94,9 +94,9 @@ func (e *ecsInteractor) createTask(taskName, imageName string) (*string, error) 
 	}
 
 	// update image name
-  if len(imageName) > 0 {
-	task.TaskDefinition.ContainerDefinitions[0].Image = aws.String(imageName)
-  }
+	if len(imageName) > 0 {
+		task.TaskDefinition.ContainerDefinitions[0].Image = aws.String(imageName)
+	}
 
 	resp, err := e.ecs.RegisterTaskDefinition(
 		&ecs.RegisterTaskDefinitionInput{
