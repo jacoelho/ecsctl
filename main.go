@@ -14,7 +14,6 @@ var (
 
 func ecsCli(c *cli.Context) {
 	service := c.Args().First()
-	nextService := c.Args().Get(1)
 	cluster := c.GlobalString("cluster")
 	region := c.GlobalString("region")
 	image := c.String("image")
@@ -26,21 +25,14 @@ func ecsCli(c *cli.Context) {
 	case len(service) == 0:
 		fmt.Println("invalid service name")
 		return
-	case len(nextService) == 0:
-		fmt.Println("invalid service name")
-		return
 	case len(region) == 0:
 		fmt.Println("invalid aws region")
-		return
-	case service == nextService:
-		fmt.Println("invalid service name")
 		return
 	}
 
 	interactor := newInteractor(configInteractor{cluster: cluster, region: region})
 	interactor.rollingUpdate(ecsUpdateConfig{
 		prevService:  service,
-		nextService:  nextService,
 		image:        image,
 		timeout:      time.Duration(timeout) * time.Second,
 		updatePeriod: time.Duration(updatePeriod) * time.Second,
