@@ -1,5 +1,5 @@
 
-VERSION ?= 1.0.0
+VERSION ?= 1.0.1
 BINARY = ecsctl
 LDFLAGS=-ldflags "-X main.Version=${VERSION}"
 ARQUITECTURES = darwin linux
