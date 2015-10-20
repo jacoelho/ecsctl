@@ -47,6 +47,13 @@ type ecsUpdateConfig struct {
 	updatePeriod time.Duration
 }
 
+func normalizeCount(n int64) int64 {
+	if n < 0 {
+		return 0
+	}
+	return n
+}
+
 func newInteractor(c configInteractor) *ecsInteractor {
 	svc := ecs.New(aws.NewConfig().WithRegion(c.region))
 
@@ -267,6 +274,7 @@ func (interactor *ecsInteractor) rollingUpdate(config ecsUpdateConfig) {
 				wait.Poll(5*time.Second, config.timeout, func() (bool, error) { return interactor.waitForUpdate(prevServiceName) })
 			}
 
+			fmt.Printf("%s:%d    %s:%d\n", prevService.serviceName, 0, nextService.serviceName, nextCount)
 			interactor.deleteService(prevServiceName)
 			break
 		}
@@ -274,9 +282,10 @@ func (interactor *ecsInteractor) rollingUpdate(config ecsUpdateConfig) {
 		interactor.updateService(nextServiceName, nextService.taskDefinition, nextCount+1)
 		wait.Poll(10*time.Second, config.timeout, func() (bool, error) { return interactor.waitForUpdate(nextServiceName) })
 
-		interactor.updateService(prevServiceName, prevService.taskDefinition, prevCount-1)
+		interactor.updateService(prevServiceName, prevService.taskDefinition, normalizeCount(prevCount-1))
 		wait.Poll(10*time.Second, config.timeout, func() (bool, error) { return interactor.waitForUpdate(prevServiceName) })
 
+		fmt.Printf("%s:%d    %s:%d\n", prevService.serviceName, normalizeCount(prevCount-1), nextService.serviceName, nextCount+1)
 		fmt.Printf("container started: waiting %s\n", config.updatePeriod)
 		time.Sleep(config.updatePeriod)
 	}
